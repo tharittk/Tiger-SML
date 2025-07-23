@@ -26,9 +26,42 @@ structure Interp = struct
       | interpOp S.Div   = Int.div
 
     fun interpStm (s:S.stm, tbl:table) = 
-          raise InterpUnimplemented (* fix me! *)
+      case s of
+        S.CompoundStm(s1, s2) =>
+        let val tbl1 = interpStm(s1, tbl)
+            val tbl2 = interpStm(s2, tbl1)
+        in
+          tbl2
+        end
+      | S.AssignStm (iden, e1) =>
+        let val (e1_val, tbl1) = interpExp(e1, tbl)
+        in
+        update(tbl1, iden, e1_val)
+        end
+      | S.PrintStm elist => 
+        (* iterate over element in the list *)
+        let val (tmp, tbl1) = interpExp (hd elist, tbl)
+        in
+        print(Int.toString(tmp) ^ "\n");
+        interpStm(S.PrintStm(tl elist), tbl1)
+        end
+
     and interpExp (e:S.exp, tbl:table) = 
-          raise InterpUnimplemented (* fix me! *)
+      case e of 
+        S.IdExp id => (lookup(tbl, id), tbl)
+      | S.NumExp n => (n, tbl)
+      | S.OpExp (e1, o, e2) =>
+        let val (e1_val, tbl1) = interpExp(e1, tbl)
+        val (e2_val, tbl2) = interpExp(e2, tbl1)
+        in
+          (interpOp o (e1_val, e2_val), tbl2)
+        end
+      | S.EseqExp (stm, e1) =>
+      (* evaluate the stetement for side effect used in e1 `first *)
+        let val tbl1 = interpStm(stm, tbl)
+        in
+        (interpExp(e1, tbl1), tbl1)
+        end
 
     fun interp s = 
           (interpStm(s, nil); ())

@@ -8,16 +8,13 @@ structure MaxArg = struct
 
     fun maxarg s = 
       case s of
-        S.CompoundStm(s1, s2) =>
-          let val args1 = maxarg s1
-	      val args2 = maxarg s2
-	  in Int.max (args1, args2)
-	  end
-      | S.AssignStm(x, e) => raise MaxUnimplemented (* change me!! *)
-      | S.PrintStm elist =>  raise MaxUnimplemented (* change me!! *)
+        S.CompoundStm(s1, s2) => Int.max(maxarg s1, maxarg s2)
+      | S.AssignStm(x, e) => maxExpArg e
+      | S.PrintStm elist => List.length (elist)
 
     and maxExpArg e =
       case e of
-        S.IdExp _ => 0
-      | _ =>  raise MaxUnimplemented (* change me and extend cases!! *) 
+      S.OpExp (e1, _, e2)=> Int.max(maxExpArg e1, maxExpArg e2)  
+      | S.EseqExp (s, e) => Int.max(maxarg s, maxExpArg e)
+      | _ => 0
 end
