@@ -20,3 +20,5 @@ fun.grm.sml
 parse.sml
 cfold.sml
 compile.sml
+
+test.sml

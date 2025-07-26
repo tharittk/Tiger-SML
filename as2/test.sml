@@ -8,7 +8,7 @@ val id = Symbol.symbol
    fun main(arg:int):int = id(3)
 *)
 val prog1 =
-  [(p,(id"id",id"x",Inttp,Inttp,Id(id"x"))),
+  [(p,(id "id",id "x",Inttp,Inttp,Id(id"x"))),
    (p,(id"main",id"arg",Inttp,Inttp, Call (Id(id"id"),Int 3)))]
 
 (* fun fac(x:int):int = if x = 0 then 1 else x * fac(x - 1)
@@ -16,7 +16,7 @@ val prog1 =
 *)
 val prog2 =
  [(p,
-     (id"fac",id"x",Inttp,Inttp,
+     (id "fac",id "x",Inttp,Inttp,
        If(Op (Eq,[Id(id"x"),Int 0]),
 	 Int 1,
          Op (Mul,[Id(id"x"),Call (Id(id"fac"), Op (Sub,[Id(id"x"),Int 1]))])
