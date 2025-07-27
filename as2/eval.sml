@@ -23,10 +23,12 @@ struct
  val externEnv : environment =
    List.foldl (fn ((name,body),env) => 
      Symbol.enter (env, Symbol.symbol name, ExternV (Symbol.symbol name)))
+     (* fold the self symbol *)
    Symbol.empty externals
 
  val externFuns : externalFun Symbol.table = 
-   List.foldl (fn ((name,body),env) => Symbol.enter (env, Symbol.symbol name, body))
+   List.foldl (fn ((name,body),env) => 
+     Symbol.enter (env, Symbol.symbol name, body))
    Symbol.empty externals 
 
  exception Eval
